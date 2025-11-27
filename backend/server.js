@@ -4,7 +4,7 @@ import { Server } from "socket.io";
 import mongoose from "mongoose";
 import cors from "cors";
 import { connectToSocket } from "./controllers/socketManager.js";
-
+import userRoute from "./routes/user.route.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -19,13 +19,10 @@ app.use(express.urlencoded({ limit: "40kb", extended: true }));
 
 app.set("port", process.env.PORT || 3000);
 
-app.get("/", (req, res) => {
-  return res.json({ message: "hello from get server" });
-});
+app.use("/api/v1/users", userRoute);
 
 const port = app.get("port");
 
-// Start Server
 const start = async () => {
   try {
     const connectionDB = await mongoose.connect(process.env.MONGO_URL);
