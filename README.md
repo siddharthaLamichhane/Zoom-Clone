@@ -85,8 +85,6 @@ Returns a simple test message from the backend.
 - `disconnect`
 - `join-room`
 - `offer`
-- `answer`
-- `ice-candidate`
 - `send-message`
 
 ---

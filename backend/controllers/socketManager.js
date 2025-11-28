@@ -5,7 +5,14 @@ let message = {};
 let timeOnline = {};
 
 export const connectToSocket = (server) => {
-  const io = new Server(server);
+  const io = new Server(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+      allowedHeaders: ["*"],
+      credientials: true,
+    },
+  });
   io.on("connection", (socket) => {
     socket.on("join-call", (path) => {
       if (connection[path] === undefined) {
@@ -32,9 +39,6 @@ export const connectToSocket = (server) => {
       }
     });
 
-    socket.on("signal", (toId, message) => {
-      io.to(toId).emit("signal", socket.id, message);
-    });
     socket.on("chat-message", (data, sender) => {
       const [matchingRoom, found] = Object.entries(connections).reduce(
         ([room, isFound], [roomKey, roomValue]) => {
@@ -64,6 +68,8 @@ export const connectToSocket = (server) => {
     socket.on("disconnect", () => {
       var diffTime = Math.abs(timeOnline[socket.id] - new Date());
       var key;
+      //k is for room
+      //v is for how many people are i inside the connections or rooms
       for (const [k, v] of JSON.parse(
         JSON.stringify(Object.entries(connections))
       )) {
